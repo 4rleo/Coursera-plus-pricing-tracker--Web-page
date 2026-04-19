@@ -22,12 +22,14 @@ function formatPrice(price: number): string {
 }
 
 function formatDate(dateStr: string): string {
-  const date = new Date(dateStr)
-  return date.toLocaleDateString("es-MX", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month-1, day);
+  
+  return date.toLocaleDateString("es-MX", { 
+    year: "numeric", 
+    month: "short", 
+    day: "numeric" 
+  });
 }
 
 export function PriceTable({ data }: PriceTableProps) {

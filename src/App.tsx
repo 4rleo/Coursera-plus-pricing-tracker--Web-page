@@ -5,7 +5,6 @@ import { PriceTable } from "@/components/price-table"
 import {useState, useEffect} from 'react'
 import '../styles/globals.css'
 
-import priceData from "./../../data.json"
 
 interface PriceEntry {
   price: number
@@ -17,12 +16,14 @@ function formatPrice(price: number): string {
 }
 
 function formatDate(dateStr: string): string {
-  const date = new Date(dateStr)
-  return date.toLocaleDateString("es-MX", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month-1, day);
+  
+  return date.toLocaleDateString("es-MX", { 
+    year: "numeric", 
+    month: "short", 
+    day: "numeric" 
+  });
 }
 
 function getLastPriceChange(data: PriceEntry[]): { date: string; change: number } {
@@ -50,12 +51,16 @@ export default function App() {
         const response = await fetch
         ("https://raw.githubusercontent.com/4rleo/Coursera-plus-pricing-tracker/master/data.json")
         const json = await response.json()
+        
         setData(json)
+        
       } catch (error){
         console.error("Error cargando el historial de datos") 
       }
     }
+
     fetchData()
+
   }, [])
   const sortedData = [...data].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()

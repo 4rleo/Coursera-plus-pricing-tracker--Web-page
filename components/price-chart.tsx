@@ -10,6 +10,7 @@ import {
   AreaChart,
 } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { useEffect } from "react"
 
 interface PriceEntry {
   price: number
@@ -25,16 +26,21 @@ function formatPrice(price: number): string {
 }
 
 function formatDate(dateStr: string): string {
-  const date = new Date(dateStr)
-  return date.toLocaleDateString("es-MX", { month: "short", day: "numeric" })
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.toLocaleDateString("es-MX", {  
+    month: "short", 
+    day: "numeric" 
+  });
 }
 
 export function PriceChart({ data }: PriceChartProps) {
-  const chartData = data.map((entry) => ({
+  const chartData = data.map((entry) => {
+    
+    return({
     ...entry,
     formattedDate: formatDate(entry.date),
-  }))
-
+  })})
   return (
     <Card className="bg-card border-border">
       <CardHeader>
@@ -45,6 +51,7 @@ export function PriceChart({ data }: PriceChartProps) {
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
+              
               data={chartData}
               margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
             >
@@ -65,6 +72,7 @@ export function PriceChart({ data }: PriceChartProps) {
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
+                minTickGap={30}
               />
               <YAxis
                 stroke="oklch(0.708 0 0)"
